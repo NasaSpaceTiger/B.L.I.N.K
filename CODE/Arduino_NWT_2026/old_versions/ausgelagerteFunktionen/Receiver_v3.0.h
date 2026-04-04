@@ -6,12 +6,10 @@
 
 class ReceiverClass {
   public:
-    void init();                 // Pins + Serial
-    void calibrateThreshold();   // ⭐ Threshold im setup aufrufbar
-    void sync();                 // Synchronisation
-    String read();               // Zeichen lesen
-    void showText(String txt);   // Ausgabe
-    bool ledIsOn();
+    void init();
+    void sync();
+    String read();
+    void showText(String txt);
 
   private:
     int threshold = 8700;
@@ -22,7 +20,7 @@ class ReceiverClass {
 
     String receivedText = "";
 
-
+    bool ledIsOn();
     bool readBit();
     char readAsciiChar();
 };

@@ -3,11 +3,7 @@
 SenderClass Sender;
 
 void SenderClass::init() {
-
   pinMode(LED_PIN, OUTPUT);
-  pinMode(BUTTPN_PIN_START, INPUT_PULLUP);
-  pinMode(BUTTPN_PIN_ToggleLamp, INPUT_PULLUP);
-  digitalWrite(LED_PIN, LOW);
 }
 
 void SenderClass::Sync() {
@@ -41,7 +37,6 @@ void SenderClass::send(String txt) {
 
   while (true) {
     digitalWrite(LED_PIN, HIGH);
-
   }
 }
 

@@ -1,21 +1,13 @@
-//ein sender ein empfänger
 //sender
 #include <Arduino.h>
 
-String text = "Hallo Andi. test";
+String text = "Hallo Andi";
 
 #include <Arduino.h>
 #include "sender.h"
 
 void setup() {
   Sender.init();
-  while(digitalRead(BUTTPN_PIN_START) == HIGH){ //aus
-    if(digitalRead(BUTTPN_PIN_ToggleLamp) == LOW){ //an
-      digitalWrite(LED_PIN, HIGH); //an
-      delay(3000);
-    }
-    digitalWrite(LED_PIN, LOW); //aus
-  }
   Sender.Sync();
 }
 
@@ -25,13 +17,15 @@ void loop() {
 
 
 
+// beide leds an, wenn einer sendden will led aus und dann 3ms warten
+
+/*
 //empfänger
 #include <Arduino.h>
 #include "receiver.h"
 
 void setup() {
   Receiver.init();
-  Receiver.calibrateThreshold();
   Receiver.sync();
 }
 
@@ -42,4 +36,4 @@ void loop() {
     Receiver.showText(Message);
     while (true);
   }
-}
+}*/

@@ -27,23 +27,7 @@ char ReceiverClass::readAsciiChar() {
 void ReceiverClass::init() {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   Serial.begin(9600);
-
-  Serial.println("Empfänger gestartet");
-}
-
-void ReceiverClass::calibrateThreshold() {
-  Serial.println("Taste drücken, um Threshold zu setzen!!!!!!");
-
-  while (digitalRead(BUTTON_PIN) == HIGH) {
-    // warten
-  }
-
-  threshold = analogRead(LDR_PIN) - THRESHOLD_OFFSET;
-
-  Serial.print("Threshold gesetzt auf: ");
-  Serial.println(threshold);
-
-  delay(3000);
+  Serial.println("Empfänger gestartet.");
 }
 
 void ReceiverClass::sync() {
@@ -52,6 +36,12 @@ void ReceiverClass::sync() {
   bool seenOn = false;
 
   while (!synchronizedOnce) {
+
+    if (digitalRead(BUTTON_PIN) == LOW) {
+      threshold = analogRead(LDR_PIN) - THRESHOLD_OFFSET;
+      Serial.print("Neuer Threshold: ");
+      Serial.println(threshold);
+    }
 
     bool on = ledIsOn();
 
@@ -80,7 +70,7 @@ void ReceiverClass::sync() {
       }
 
       if (!synchronizedOnce) {
-        Serial.println("LED wurde wieder AN -> Neustart...");
+        Serial.println("LED wurde wieder AN → Neustart...");
         seenOn = false;
       }
     }
