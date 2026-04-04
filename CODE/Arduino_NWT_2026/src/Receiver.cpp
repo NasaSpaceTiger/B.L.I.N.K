@@ -27,64 +27,22 @@ char ReceiverClass::readAsciiChar() {
 void ReceiverClass::init() {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   Serial.begin(9600);
-
-  Serial.println("Empfänger gestartet");
 }
 
 void ReceiverClass::calibrateThreshold() {
-  Serial.println("Taste drücken, um Threshold zu setzen!!!!!!");
-
-  while (digitalRead(BUTTON_PIN) == HIGH) {
-    // warten
-  }
-
   threshold = analogRead(LDR_PIN) - THRESHOLD_OFFSET;
-
   Serial.print("Threshold gesetzt auf: ");
   Serial.println(threshold);
-
-  delay(3000);
+  delay(500);
 }
 
 void ReceiverClass::sync() {
-  Serial.println("Starte Synchronisation...");
 
-  bool seenOn = false;
+  // Warten auf StartSignal (LED AN)
+  while (!ledIsOn());
 
-  while (!synchronizedOnce) {
-
-    bool on = ledIsOn();
-
-    if (!seenOn) {
-      if (on) {
-        seenOn = true;
-        Serial.println("LED wurde AN erkannt. Warte auf AUS...");
-      }
-      continue;
-    }
-
-    if (!on) {
-      Serial.println("LED ist AUS. Prüfe ob sie 1 Sekunde AUS bleibt...");
-
-      unsigned long start = millis();
-
-      while (!ledIsOn()) {
-        if (millis() - start >= 998) {
-
-          nextSample = millis() + (STEP_TIME / 2);
-
-          Serial.println("Synchronisiert!");
-          synchronizedOnce = true;
-          break;
-        }
-      }
-
-      if (!synchronizedOnce) {
-        Serial.println("LED wurde wieder AN -> Neustart...");
-        seenOn = false;
-      }
-    }
-  }
+  // Jetzt beginnt gleich Bit 0
+  nextSample = millis() + (STEP_TIME / 2);
 }
 
 String ReceiverClass::read() {

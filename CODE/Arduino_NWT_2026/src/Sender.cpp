@@ -3,20 +3,10 @@
 SenderClass Sender;
 
 void SenderClass::init() {
-
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUTTPN_PIN_START, INPUT_PULLUP);
-  pinMode(BUTTPN_PIN_ToggleLamp, INPUT_PULLUP);
-  digitalWrite(LED_PIN, LOW);
-}
-
-void SenderClass::Sync() {
   digitalWrite(LED_PIN, HIGH);
-  delay(SYNC_ON_TIME);
-  digitalWrite(LED_PIN, LOW);
-  delay(SYNC_OFF_TIME);
 }
-
 
 void SenderClass::waitNextBit(unsigned long &t) {
   t += STEP_TIME * 1000;
@@ -33,15 +23,17 @@ void SenderClass::sendLetter(char c) {
     waitNextBit(t);
   }
 }
-
 void SenderClass::send(String txt) {
+
+  // Startbit (immer HIGH)
+  unsigned long t = micros();
+  digitalWrite(LED_PIN, HIGH);
+  waitNextBit(t);
+
+  // Jetzt die echten Datenbits
   for (int i = 0; i < txt.length(); i++) {
     sendLetter(txt[i]);
   }
 
-  while (true) {
-    digitalWrite(LED_PIN, HIGH);
-
-  }
+  digitalWrite(LED_PIN, HIGH); // Idle
 }
-
