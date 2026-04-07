@@ -3,14 +3,16 @@
 
 #include <Arduino.h>
 #include "Parameter.h"
+#include "Receiver.h"
 
 class SenderClass {
-  public:
+public:
     void init();
+    bool wantsToSend();
+    void startSignal();
     void send(String txt);
-    void Sync();
 
-  private:
+private:
     void waitNextBit(unsigned long &t);
     void sendLetter(char c);
 };
@@ -18,3 +20,4 @@ class SenderClass {
 extern SenderClass Sender;
 
 #endif
+

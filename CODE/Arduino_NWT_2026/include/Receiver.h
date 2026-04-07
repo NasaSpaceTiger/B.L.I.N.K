@@ -5,26 +5,21 @@
 #include "Parameter.h"
 
 class ReceiverClass {
-  public:
-    void init();                 // Pins + Serial
-    void calibrateThreshold();   // ⭐ Threshold im setup aufrufbar
-    void sync();                 // Synchronisation
-    String read();               // Zeichen lesen
-    void showText(String txt);   // Ausgabe
+public:
+    void init();
+    void calibrateThreshold();
+    bool detectStartSignal();
+    void sync();
+    String read();
+    void showText(String txt);
+
     bool ledIsOn();
 
-  private:
-    int threshold = 8700;
-
-    bool synchronizedOnce = false;
+private:
+    int threshold = 8000;
     unsigned long nextSample = 0;
     unsigned long endCheckStart = 0;
-
     String receivedText = "";
-
-
-    bool readBit();
-    char readAsciiChar();
 };
 
 extern ReceiverClass Receiver;
