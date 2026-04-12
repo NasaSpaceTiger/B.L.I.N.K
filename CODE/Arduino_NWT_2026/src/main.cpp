@@ -3,7 +3,7 @@
 #include "receiver.h"
 #include "Parameter.h"
 
-String text = "Hallo Pichlers!!!";
+String text = "Hello World. Servus Tim";
 
 void setup() {
     Sender.init();
@@ -34,7 +34,7 @@ void loop() {
 
     //3. Text ändern
     if (Serial.available()) {
-        text = Serial.readStringUntil('\n');   // ganze Zeile einlesen
+        text = Serial.readStringUntil('\n');   // Zeile einlesen
         text.trim();                           // Zeilenumbruch entfernen
         Serial.print("Neuer Text gesetzt: ");
         Serial.println(text);
