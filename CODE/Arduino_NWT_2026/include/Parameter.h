@@ -2,7 +2,7 @@
 #define PARAMETER_H
 
 // Bitzeit in ms
-const int STEP_TIME = 15;
+const int STEP_TIME = 10;
 
 const int LED_PIN = 11;
 const int LDR_PIN = A0;

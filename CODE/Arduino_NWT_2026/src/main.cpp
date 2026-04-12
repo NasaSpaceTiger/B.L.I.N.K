@@ -32,6 +32,15 @@ void loop() {
         return;
     }
 
-    // 3. Idle
+    //3. Text ändern
+    if (Serial.available()) {
+        text = Serial.readStringUntil('\n');   // ganze Zeile einlesen
+        text.trim();                           // Zeilenumbruch entfernen
+        Serial.print("Neuer Text gesetzt: ");
+        Serial.println(text);
+    }
+
+
+    // 4. Idle
     digitalWrite(LED_PIN, HIGH);
 }
