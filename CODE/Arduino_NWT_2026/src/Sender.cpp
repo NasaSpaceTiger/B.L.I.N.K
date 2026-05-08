@@ -26,8 +26,13 @@ bool SenderClass::wantsToSend() {
 
 void SenderClass::startSignal() {
     digitalWrite(LED_PIN, LOW);
-    delay(1000); // 1s AUS -> Start
+    delay(200);
+
+    digitalWrite(LED_PIN, HIGH);
+    delay(STEP_TIME * 2);
 }
+
+
 
 void SenderClass::waitNextBit(unsigned long &t) {
     t += STEP_TIME * 1000;// Zeit für nächstes Bit setzen
@@ -35,20 +40,34 @@ void SenderClass::waitNextBit(unsigned long &t) {
 }
 
 void SenderClass::sendLetter(char c) {
-    byte ascii = c;// ASCII‑Wert des Zeichens holen
-    unsigned long t = micros();// Startzeit für erstes Bit
+    byte ascii = c;
+    unsigned long t = micros();
 
+    // Startbit = 0
+    digitalWrite(LED_PIN, LOW);
+    waitNextBit(t);
+
+    // 7 Datenbits
     for (int i = 6; i >= 0; i--) {
-        bool bit = (ascii >> i) & 1; // einzelnes Bit herausfinden
-        digitalWrite(LED_PIN, bit ? HIGH : LOW);// LED je nach Bit setzen
-        waitNextBit(t);// Bitdauer abwarten
+        bool bit = (ascii >> i) & 1;
+        digitalWrite(LED_PIN, bit ? HIGH : LOW);
+        waitNextBit(t);
     }
+
+    // Stopbit = 1
+    digitalWrite(LED_PIN, HIGH);
+    waitNextBit(t);
 }
 
 void SenderClass::send(String txt) {
     for (int i = 0; i < txt.length(); i++) {
-        sendLetter(txt[i]);//Zeichen senden
+        sendLetter(txt[i]);
     }
 
-    digitalWrite(LED_PIN, HIGH);// zurück in Idle (LED an)
+    // Endmarkierung: 500ms AUS
+    digitalWrite(LED_PIN, LOW);
+    delay(500);
+
+    digitalWrite(LED_PIN, HIGH); // Idle
 }
+

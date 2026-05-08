@@ -3,7 +3,7 @@
 #include "receiver.h"
 #include "Parameter.h"
 
-String text = "Hello World. Servus Tim";
+String text = "Hello World. Servus Tim. Kp was ich hier schreiben soll. ich hoffe es geht bis da. 123456789";
 
 void setup() {
     Sender.init();
