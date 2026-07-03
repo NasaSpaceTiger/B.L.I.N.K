@@ -1,3 +1,31 @@
+/*#ifndef RECEIVER_H
+#define RECEIVER_H
+
+#include <Arduino.h>
+#include "Parameter.h"
+
+class ReceiverClass {
+public:
+    int threshold = 8000;
+    void init();
+    void calibrateThreshold();
+    bool detectStartSignal();
+    void sync();
+    String read();
+    void showText(String txt);
+
+    bool ledIsOn();
+
+private:
+    unsigned long nextSample = 0;
+    unsigned long endCheckStart = 0;
+    String receivedText = "";
+};
+
+extern ReceiverClass Receiver;
+
+#endif*/
+/*
 #ifndef RECEIVER_H
 #define RECEIVER_H
 
@@ -24,4 +52,18 @@ private:
 
 extern ReceiverClass Receiver;
 
-#endif
+#endif*/
+#pragma once
+#include <Arduino.h>
+
+class Receiver {
+public:
+    void begin();
+    void calibrate();
+    bool detectStart();
+    bool detectStop();
+    int readChar();
+
+private:
+    int threshold = 0;
+};

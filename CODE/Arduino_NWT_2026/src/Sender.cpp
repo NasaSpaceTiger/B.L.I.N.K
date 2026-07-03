@@ -1,4 +1,4 @@
-#include "sender.h"
+/*#include "sender.h"
 
 SenderClass Sender;
 
@@ -27,12 +27,7 @@ bool SenderClass::wantsToSend() {
 void SenderClass::startSignal() {
     digitalWrite(LED_PIN, LOW);
     delay(200);
-
-    digitalWrite(LED_PIN, HIGH);
-    delay(STEP_TIME * 2);
 }
-
-
 
 void SenderClass::waitNextBit(unsigned long &t) {
     t += STEP_TIME * 1000;// Zeit für nächstes Bit setzen
@@ -59,15 +54,131 @@ void SenderClass::sendLetter(char c) {
     waitNextBit(t);
 }
 
+
 void SenderClass::send(String txt) {
     for (int i = 0; i < txt.length(); i++) {
         sendLetter(txt[i]);
     }
 
-    // Endmarkierung: 500ms AUS
-    digitalWrite(LED_PIN, LOW);
-    delay(500);
+    digitalWrite(LED_PIN, HIGH); // Idle
+}*/
 
+/*
+#include "sender.h"
+
+SenderClass Sender;
+
+void SenderClass::init() {
+    pinMode(LED_PIN, OUTPUT);
+    pinMode(BUTTPN_PIN_START, INPUT_PULLUP);
     digitalWrite(LED_PIN, HIGH); // Idle
 }
 
+bool SenderClass::wantsToSend() {
+
+    if (digitalRead(BUTTPN_PIN_START) == LOW) { //gedrückt
+
+        if (!Receiver.ledIsOn()) {
+            // Der andere sendet
+            return false;
+        }
+
+        // sonst ich senden
+        return true;
+    }
+
+    return false;
+}
+
+void SenderClass::startSignal() {
+    digitalWrite(LED_PIN, LOW);
+    delay(1000); // 1s AUS -> Start
+}
+
+void SenderClass::waitNextBit(unsigned long &t) {
+    t += STEP_TIME * 1000;// Zeit für nächstes Bit setzen
+    while (micros() < t);// warten bis Bitdauer vorbei ist
+}
+
+void SenderClass::sendLetter(char c) {
+    byte ascii = c;
+    unsigned long t = micros();
+
+    // Startbit = 0
+    digitalWrite(LED_PIN, LOW);
+    waitNextBit(t);
+
+    // 7 Datenbits
+    for (int i = 6; i >= 0; i--) {
+        bool bit = (ascii >> i) & 1;
+        digitalWrite(LED_PIN, bit ? HIGH : LOW);
+        waitNextBit(t);
+    }
+
+    // Stopbit = 1
+    digitalWrite(LED_PIN, HIGH);
+    waitNextBit(t);
+}
+
+
+void SenderClass::sendLetter(char c) {
+    byte ascii = c;// ASCII‑Wert des Zeichens holen
+    unsigned long t = micros();// Startzeit für erstes Bit
+
+    for (int i = 6; i >= 0; i--) {
+        bool bit = (ascii >> i) & 1; // einzelnes Bit herausfinden
+        digitalWrite(LED_PIN, bit ? HIGH : LOW);// LED je nach Bit setzen
+        waitNextBit(t);// Bitdauer abwarten
+    }
+}
+
+void SenderClass::send(String txt) {
+    for (int i = 0; i < txt.length(); i++) {
+        sendLetter(txt[i]);//Zeichen senden
+    }
+
+    digitalWrite(LED_PIN, HIGH);// zurück in Idle (LED an)
+}*/
+#include "sender.h"
+#include "parameter.h"
+
+void Sender::begin() {
+    pinMode(LED_PIN, OUTPUT);
+    digitalWrite(LED_PIN, LOW); // LED aus im Ruhezustand
+}
+
+void Sender::sendBit(bool bit) {
+    digitalWrite(LED_PIN, bit ? HIGH : LOW);
+    delay(BIT_TIME);
+}
+
+void Sender::sendStart() {
+    digitalWrite(LED_PIN, HIGH);
+    delay(START_TIME);
+}
+
+void Sender::sendStop() {
+    digitalWrite(LED_PIN, LOW);
+    delay(STOP_TIME);
+}
+
+void Sender::sendChar(uint8_t value) {
+    uint8_t encrypted = value ^ XOR_KEY;
+
+    sendStart();
+
+    for (int i = 0; i < 6; i++) {
+        bool bit = (encrypted >> i) & 1;
+        sendBit(bit);
+    }
+
+    sendStop();
+}
+
+void Sender::sendText(const char* txt) {
+    while (*txt) {
+        uint8_t v = (*txt) & 0x3F;
+        sendChar(v);
+        txt++;
+    }
+}
