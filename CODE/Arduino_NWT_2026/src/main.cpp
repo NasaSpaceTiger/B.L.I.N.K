@@ -122,7 +122,7 @@ const int LED_PIN = 8;
 const int BUTTON_PIN = 2;
 const int SENSOR_PIN = A0;
 
-const int THRESHOLD = 700;
+const int THRESHOLD = 500;
 const unsigned int BIT_TIME = 50; // ms
 
 String message = "Hello world";
